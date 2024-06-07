@@ -1,6 +1,6 @@
-import loaderUtils, { OptionObject, Readonly as ReadonlyOptions } from 'loader-utils';
+import { OptionObject, Readonly as ReadonlyOptions } from 'loader-utils';
 import { validate as validateOptions }  from 'schema-utils';
-import glob from 'glob';
+import { glob } from 'glob';
 import path from 'path';
 import { Schema } from 'schema-utils/declarations/validate';
 
@@ -36,8 +36,10 @@ type PreLoadConfig = OptionObject & {
  */
 function PreLoadLoader (source : string) : string {
     // @ts-ignore: This is controlled by Webpack so allowing usage here
-    const loaderContext : any = this;
-    const options : ReadonlyOptions<PreLoadConfig> = loaderUtils.getOptions(loaderContext) as ReadonlyOptions<PreLoadConfig>;
+    const loaderContext = this;
+    // getOptions from webpack loader context. Loader API accessible from `this` context provided to it. 
+    // See https://webpack.js.org/api/loaders/#the-loader-context
+    const options: ReadonlyOptions<PreLoadConfig> = loaderContext.getOptions() as ReadonlyOptions<PreLoadConfig>;
     validateOptions(schema, options, { name: 'PreLoad loader' });
     var test = /\@PreLoad\("(.*)"\,"(.*)"\,"(.*)"\)/;
     var matches = source.match(test);

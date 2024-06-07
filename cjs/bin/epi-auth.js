@@ -2,7 +2,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -36,7 +40,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const readline_1 = __importDefault(require("readline"));
 const url_1 = require("url");
 // Import episerver libraries through ESM, as they are delivered as ESNext modules
-const esm = require('esm')(module, {});
+const esm = require('esm-wallaby')(module, {});
 const epi = esm('@episerver/spa-core');
 const ClientAuthStorage_1 = __importDefault(require("../ContentDelivery/ClientAuthStorage"));
 class EpiAuthCli {
@@ -142,7 +146,7 @@ const CliApplication = __importStar(require("../util/CliArguments"));
 // Read the Command Line arguments
 const defaultEnv = EpiEnvOptions_1.default.Parse(process.env.NODE_ENV || '', EpiEnvOptions_1.default.Development);
 const args = CliApplication
-    .Setup(yargs_1.default(process.argv.slice(2)), defaultEnv, "Optimizely CMS Login Script", cfg => cfg
+    .Setup((0, yargs_1.default)(process.argv.slice(2)), defaultEnv, "Optimizely CMS Login Script", cfg => cfg
     .alias('u', 'username')
     .describe('u', 'Insecurely pass username, only use from scripts that don\'t append to shell history')
     .string('u')
@@ -153,12 +157,11 @@ const args = CliApplication
     .describe('f', 'Force reauthentication, even if authentication is present')
     .boolean('f')
     .default('f', false)
-    .group(['u', 'p', 'f'], 'Login parameters'))
-    .argv;
+    .group(['u', 'p', 'f'], 'Login parameters')).parseSync();
 // Query env for settings
 const config = CliApplication.CreateConfig(args);
 // Run the actual script
-var auth = new EpiAuthCli({
+const auth = new EpiAuthCli({
     BaseURL: config.getEpiserverURL(),
     input: process.stdin,
     output: process.stdout,

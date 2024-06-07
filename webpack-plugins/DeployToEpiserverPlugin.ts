@@ -1,7 +1,7 @@
 import path from 'path';
 import FormData from 'form-data';
 import fs from 'fs';
-const esm = require('esm')(module, {});
+const esm = require('esm-wallaby')(module, {});
 const epi = esm('@episerver/spa-core');
 import ClientAuthStorage from '../ContentDelivery/ClientAuthStorage';
 import { DelegatedPlugin as Plugin, Compiler } from 'webpack';

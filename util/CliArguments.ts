@@ -2,7 +2,7 @@ import yargs from 'yargs';
 import { URL } from 'url';
 import EpiEnvOptions, { EpiEnvOption } from './EpiEnvOptions';
 import GlobalConfig from './Config';
-import { DotenvParseOutput } from 'dotenv/types';
+import { DotenvParseOutput } from 'dotenv';
 
 export type CliArgs = {
     e : EpiEnvOption

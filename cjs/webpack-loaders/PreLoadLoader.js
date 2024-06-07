@@ -3,9 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const loader_utils_1 = __importDefault(require("loader-utils"));
 const schema_utils_1 = require("schema-utils");
-const glob_1 = __importDefault(require("glob"));
+const glob_1 = require("glob");
 const path_1 = __importDefault(require("path"));
 const schema = {
     type: 'object',
@@ -33,8 +32,10 @@ const schema = {
 function PreLoadLoader(source) {
     // @ts-ignore: This is controlled by Webpack so allowing usage here
     const loaderContext = this;
-    const options = loader_utils_1.default.getOptions(loaderContext);
-    schema_utils_1.validate(schema, options, { name: 'PreLoad loader' });
+    // getOptions from webpack loader context. Loader API accessible from `this` context provided to it. 
+    // See https://webpack.js.org/api/loaders/#the-loader-context
+    const options = loaderContext.getOptions();
+    (0, schema_utils_1.validate)(schema, options, { name: 'PreLoad loader' });
     var test = /\@PreLoad\("(.*)"\,"(.*)"\,"(.*)"\)/;
     var matches = source.match(test);
     if (matches) {
@@ -45,7 +46,7 @@ function PreLoadLoader(source) {
         const variable = matches[2];
         const component_prefix = matches[3];
         const component_dir = path_1.default.resolve(loaderContext.context, component_path);
-        const files = glob_1.default.sync(component_dir + "/" + options.pattern);
+        const files = glob_1.glob.sync(component_dir + "/" + options.pattern);
         //Debug
         console.log("  - Search pattern: " + component_dir + "/" + options.pattern);
         console.log("  - Variable: " + variable);

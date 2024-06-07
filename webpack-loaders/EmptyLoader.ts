@@ -1,4 +1,3 @@
-import loaderUtils from 'loader-utils';
 import { validate as validateOptions } from 'schema-utils';
 import { Schema } from 'schema-utils/declarations/validate';
 
@@ -18,8 +17,12 @@ const schema : Schema = {
  * @param   {string}  source    The source of the resource that must be loaded
  * @returns {string}            An empty string
  */
-const EmptyLoader = (source: string) : string => {
-    const options = loaderUtils.getOptions(this);
+function EmptyLoader (): string  {
+    // getOptions from webpack loader context. Loader API accessible from `this` context provided to it. 
+    // See https://webpack.js.org/api/loaders/#the-loader-context
+    // @ts-expect-error
+    const options = this.getOptions(); 
+    
     if (options) {
         validateOptions(schema, options, { name: 'Empty loader'});
     }

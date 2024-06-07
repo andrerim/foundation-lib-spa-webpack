@@ -1,9 +1,5 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const loader_utils_1 = __importDefault(require("loader-utils"));
 const schema_utils_1 = require("schema-utils");
 /**
  * Webpack Empty loader configuration definition
@@ -19,11 +15,14 @@ const schema = {
  * @param   {string}  source    The source of the resource that must be loaded
  * @returns {string}            An empty string
  */
-const EmptyLoader = (source) => {
-    const options = loader_utils_1.default.getOptions(this);
+function EmptyLoader() {
+    // getOptions from webpack loader context. Loader API accessible from `this` context provided to it. 
+    // See https://webpack.js.org/api/loaders/#the-loader-context
+    // @ts-expect-error
+    const options = this.getOptions();
     if (options) {
-        schema_utils_1.validate(schema, options, { name: 'Empty loader' });
+        (0, schema_utils_1.validate)(schema, options, { name: 'Empty loader' });
     }
     return '';
-};
+}
 module.exports = EmptyLoader;

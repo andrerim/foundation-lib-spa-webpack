@@ -5,7 +5,7 @@ import readline from 'readline';
 import { URL } from 'url';
 
 // Import episerver libraries through ESM, as they are delivered as ESNext modules
-const esm = require('esm')(module, {});
+const esm = require('esm-wallaby')(module, {});
 const epi = esm('@episerver/spa-core');
 
 // Import local classes
@@ -34,7 +34,7 @@ class EpiAuthCli {
 
     /**
      * 
-     * @type { epi.ContentDelivery.IAuthService } auth
+     * @type { ContentDelivery.IAuthService } auth
      */
     private _auth : any;
 
@@ -167,14 +167,13 @@ const args = CliApplication
         .boolean('f')
         .default('f', false)
         .group(['u','p','f'],'Login parameters')
-    )
-    .argv;
+    ).parseSync()
 
 // Query env for settings
 const config : GlobalConfig =  CliApplication.CreateConfig(args);
 
 // Run the actual script
-var auth = new EpiAuthCli({
+const auth = new EpiAuthCli({
     BaseURL: config.getEpiserverURL(),
     input: process.stdin, 
     output: process.stdout,
